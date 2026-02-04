@@ -1,0 +1,7 @@
+@if (!loading) {
+  <ul>
+    @for (atk of artikel; track $index) {
+      <li>{{ atk.name }}</li>
+    }
+  </ul>
+}
