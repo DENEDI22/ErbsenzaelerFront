@@ -1,43 +1,72 @@
+/* Layout wrapper (optional if you have one) */
+:host {
+  display: block;
+  padding: 16px;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+/* Loading / empty text */
+p {
+  margin: 0 0 12px;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Message heading */
+h1 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* List container */
 ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    max-width: 600px;
-    margin-inline: auto;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 520px;
 }
 
+/* Each item: you're rendering two <li> per article (name + price),
+   so we style them as a "row pair" */
 li {
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    background: #f5f5f7;
-    border: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
 }
 
+/* Name row (odd li) */
+li:nth-child(odd) {
+  border-bottom: 0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Price row (even li) */
 li:nth-child(even) {
-    background: #ececf1;
+  border-top: 0;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  color: #444;
+  display: flex;
+  justify-content: space-between;
 }
 
+/* Spacing between each article block */
+li:nth-child(even) {
+  margin-bottom: 12px;
+}
+
+/* Optional: subtle hover effect */
 li:hover {
-    background: #e0e7ff;
-    border-color: #6366f1;
-}
-
-li span.name {
-    font-weight: 600;
-    font-size: 1rem;
-}
-
-li span.preis {
-    color: #16a34a;
-    font-weight: 500;
-}
-
-li span.beschreibung {
-    font-size: 0.9rem;
-    color: #555;
+  border-color: #d9d9d9;
 }

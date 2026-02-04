@@ -1,13 +1,14 @@
 @let artikel = artikel$ | async;
 
 @if (artikel === null) {
-  <p>Lade Artikel…</p>
+<p>Lade Artikel…</p>
 } @else if (artikel.length === 0) {
-  <p>Keine Artikel vorhanden.</p>
+<p>Artikel nicht Verfügbar</p>
 } @else {
-  <ul>
-    @for (a of artikel; track a.id) {
-      <li>{{ a.name }}</li>
-    }
-  </ul>
+<ul>
+  @for (a of artikel; track a.id) {
+  <li>{{ a.name }}</li>
+  <li>{{ a.preis }} €</li>
+  }
+</ul>
 }
