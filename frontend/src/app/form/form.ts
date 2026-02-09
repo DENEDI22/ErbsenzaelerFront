@@ -66,7 +66,7 @@ export class Form {
         ort: this.kunde.ort,
       },
       artikel: bestellteArtikel.map((a) => ({
-        artikelnr: a.id,
+        artikelnr: a.nr,
         menge: a.menge,
         preis: a.preis,
       })),

@@ -13,7 +13,7 @@ export class BestellService {
   }
 
   erhoeheMenge(artikel: Artikel) {
-    const found = this.artikel.find((a) => a.id === artikel.id);
+    const found = this.artikel.find((a) => a.nr === artikel.nr);
     if (!found) return;
 
     found.menge = (found.menge ?? 0) + 1;
@@ -21,7 +21,7 @@ export class BestellService {
   }
 
   verringerMenge(artikel: Artikel) {
-    const found = this.artikel.find((a) => a.id === artikel.id);
+    const found = this.artikel.find((a) => a.nr === artikel.nr);
     if (!found) return;
 
     found.menge = Math.max((found.menge ?? 0) - 1, 0);

@@ -12,6 +12,9 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
+  ssl: {
+    rejectUnauthorized: false,
+  },
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -21,7 +24,7 @@ const pool = new Pool({
 
 app.get("/artikel", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM Artikel");
+    const result = await pool.query("SELECT * FROM artikel");
     res.json(result.rows);
   } catch (err) {
     console.error("DB ERROR:", err);
@@ -82,19 +85,19 @@ app.post("/bestellung", async (req, res) => {
       `
       INSERT INTO bestellunghdr (datum, "kundenNr")
       VALUES (NOW(), $1)
-      RETURNING "headerNr"
+      RETURNING "nr"
       `,
       [kundennr],
     );
 
-    const headerNr = insertHeader.rows[0].headerNr;
+    const headerNr = insertHeader.rows[0].nr;
 
     for (const a of artikel) {
       await client.query(
         `
-        INSERT INTO bestellungen
-        (menge, headernr, id, artikelnr)
-        VALUES($1, $2, nextval('bestellungen_id_seq'::regclass), $3);
+        INSERT INTO bestellungzeile
+        (menge, "headerNr", "artikelNr")
+        VALUES($1, $2, $3);
         `,
         [a.menge, headerNr, a.artikelnr],
       );
@@ -116,6 +119,6 @@ app.post("/bestellung", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
+app.listen(process.env.Port, () => {
   console.log(" Backend running");
 });

@@ -6,7 +6,7 @@
   <p>Keine Artikel vorhanden.</p>
 } @else {
   <ul>
-    @for (a of artikel; track a.id) {
+    @for (a of artikel; track a.nr) {
       <li>
         <span class="name">{{ a.name }}</span>
         <span class="beschreibung">{{ a.beschreibung }}</span>
