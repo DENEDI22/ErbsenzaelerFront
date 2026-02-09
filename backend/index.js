@@ -1,6 +1,9 @@
 import express from "express";
 import pkg from "pg";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const { Pool } = pkg;
 
@@ -9,11 +12,11 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  host: "localhost",
-  user: "myuser",
-  password: "mypassword",
-  database: "postgres",
-  port: 5432,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: Number(process.env.DB_PORT),
 });
 
 app.get("/artikel", async (req, res) => {
@@ -42,8 +45,12 @@ app.post("/bestellung", async (req, res) => {
     return res.status(400).json({ error: "Alle Kundenfelder sind Pflicht" });
   }
 
+  const client = await pool.connect();
   try {
-    const check = await pool.query(
+    await client.query("BEGIN");
+
+    let kundennr;
+    const check = await client.query(
       `
       SELECT kundennr
       FROM kunden
@@ -52,33 +59,60 @@ app.post("/bestellung", async (req, res) => {
         AND strasse  = $3
         AND hausnr   = $4
         AND plz      = $5
+        AND ort      = $6
       `,
-      [vorname, nachname, strasse, hausnr, plz],
+      [vorname, nachname, strasse, hausnr, plz, ort],
     );
 
     if (check.rows.length > 0) {
-      return res.status(200).json({
-        message: "Kunde existiert bereits",
-        kundennr: check.rows[0].kundennr,
-      });
+      kundennr = check.rows[0].kundennr;
+    } else {
+      const insertKunde = await client.query(
+        `
+        INSERT INTO kunden (vorname, nachname, strasse, ort, hausnr, plz)
+        VALUES ($1,$2,$3,$4,$5,$6)
+        RETURNING kundennr
+        `,
+        [vorname, nachname, strasse, ort, hausnr, plz],
+      );
+      kundennr = insertKunde.rows[0].kundennr;
     }
 
-    const insert = await pool.query(
+    const insertHeader = await client.query(
       `
-      INSERT INTO kunden (vorname, nachname, strasse, ort, hausnr, plz, kundennr)
-      VALUES ($1, $2, $3, $4, $5, $6, nextval('kunden_kundennr_seq'))
-      RETURNING kundennr
+      INSERT INTO bestellunghdr (datum, "kundenNr")
+      VALUES (NOW(), $1)
+      RETURNING "headerNr"
       `,
-      [vorname, nachname, strasse, ort, hausnr, plz],
+      [kundennr],
     );
 
+    const headerNr = insertHeader.rows[0].headerNr;
+
+    for (const a of artikel) {
+      await client.query(
+        `
+        INSERT INTO bestellungen
+        (menge, headernr, id, artikelnr)
+        VALUES($1, $2, nextval('bestellungen_id_seq'::regclass), $3);
+        `,
+        [a.menge, headerNr, a.artikelnr],
+      );
+    }
+
+    await client.query("COMMIT");
+
     res.status(201).json({
-      message: "Kunde neu angelegt",
-      kundennr: insert.rows[0].kundennr,
+      message: "Bestellung erfolgreich",
+      kundennr,
+      headerNr,
     });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("DB ERROR:", err);
     res.status(500).json({ error: err.message });
+  } finally {
+    client.release();
   }
 });
 

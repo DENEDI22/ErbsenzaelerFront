@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { Artikel } from '../models/bestellung.model';
+import { Artikel } from '../models/artikel.model';
 import { BestellService } from '../services/bestell.service';
 
 @Component({

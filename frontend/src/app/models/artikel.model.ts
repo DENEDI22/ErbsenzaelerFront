@@ -3,5 +3,5 @@ export interface Artikel {
   name: string;
   beschreibung: string;
   preis: number;
-  menge?: number;
+  menge: number;
 }

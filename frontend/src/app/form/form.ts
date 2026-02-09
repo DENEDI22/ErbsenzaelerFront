@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
-import { Artikel } from '../models/bestellung.model';
+import { Artikel } from '../models/artikel.model';
 import { BestellService } from '../services/bestell.service';
 import { Kunde } from '../models/kunde.model';
 import { FormsModule } from '@angular/forms';
@@ -44,6 +44,11 @@ export class Form {
       return;
     }
 
+    if (isNaN(Number(this.kunde.hausnr)) || isNaN(Number(this.kunde.plz))) {
+      alert('Hausnummer und PLZ müssen gültige Zahlen sein!');
+      return;
+    }
+
     if (bestellteArtikel.length === 0) {
       alert('Bitte wähle mindestens einen Artikel aus!');
       return;
@@ -72,7 +77,11 @@ export class Form {
       next: (res) => {
         console.log('Antwort vom Backend:', res);
 
-        alert(`Bestellung erfolgreich!\nKundennr: ${res.kundennr}\nBestellnr: ${res.bestellnr}`);
+        if (res.message === 'Kunde existiert bereits') {
+          alert(`Kunde existiert bereits!\nKundennr: ${res.kundennr}`);
+        } else if (res.message === 'Kunde neu angelegt') {
+          alert(`Kunde neu angelegt!\nKundennr: ${res.kundennr}`);
+        }
 
         this.bestellService.init(this.bestellService.artikel.map((a) => ({ ...a, menge: 0 })));
 
@@ -85,6 +94,13 @@ export class Form {
           ort: '',
         };
 
+        if (res.message === 'Bestellung erfolgreich') {
+          alert('Bestellung erfolgreich!');
+        } else {
+          alert('Bestellung fehlgeschlagen!');
+        }
+
+        this.sleep(5000);
         window.location.reload();
       },
       error: (err) => {
@@ -92,5 +108,9 @@ export class Form {
         alert('Fehler beim Absenden der Bestellung!');
       },
     });
+  }
+
+  sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

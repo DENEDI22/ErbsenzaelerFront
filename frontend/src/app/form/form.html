@@ -29,7 +29,19 @@
     <input id="ort" name="ort" required [(ngModel)]="kunde.ort" />
   </div>
 
-  <p>Gesamtpreis: {{ bestellService.gesamtpreis }} €</p>
+  <p>Bestellung:</p>
+
+  <ul>
+    @for (item of bestellService.artikel; track $index) {
+      @if (item.menge > 0) {
+        <li>
+          <p>{{ item.menge }}x {{ item.name }}</p>
+        </li>
+      }
+    }
+  </ul>
+
+  <p>Gesamtpreis: {{ bestellService.gesamtpreis / 100 }} €</p>
 
   <button type="submit">Bestellen</button>
 </form>
