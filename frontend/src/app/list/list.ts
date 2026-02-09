@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { Artikel } from '../models/bestellung.model';
+import { BestellService } from '../services/bestell.service';
 
 @Component({
   selector: 'app-list',
@@ -11,11 +13,24 @@ import { Observable } from 'rxjs';
   styleUrls: ['./list.css'],
 })
 export class List implements OnInit {
-  artikel$!: Observable<any[]>;
+  private artikelSubject = new BehaviorSubject<Artikel[]>([]);
+  artikel$ = this.artikelSubject.asObservable();
+  bestellService = inject(BestellService);
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.artikel$ = this.http.get<any[]>('http://localhost:3000/artikel');
+  ngOnInit() {
+    this.http.get<Artikel[]>('http://localhost:3000/artikel').subscribe((data) => {
+      this.artikelSubject.next(data);
+      this.bestellService.init(data);
+    });
+  }
+
+  erhoeheMenge(artikel: Artikel) {
+    this.bestellService.erhoeheMenge(artikel);
+  }
+
+  verringerMenge(artikel: Artikel) {
+    this.bestellService.verringerMenge(artikel);
   }
 }
