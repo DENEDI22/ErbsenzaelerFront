@@ -1,0 +1,23 @@
+@let artikel = artikel$ | async;
+
+@if (artikel === null) {
+  <p>Lade Artikel…</p>
+} @else if (artikel.length === 0) {
+  <p>Keine Artikel vorhanden.</p>
+} @else {
+  <ul>
+    @for (a of artikel; track a.nr) {
+      <li>
+        <span class="name">{{ a.name }}</span>
+        <span class="beschreibung">{{ a.beschreibung }}</span>
+        <span class="preis">{{ a.preis/100 }} €</span>
+
+        <div class="quantity-controller">
+          <button type="button" (click)="verringerMenge(a)">-</button>
+          <span>{{ a.menge || 0 }}</span>
+          <button type="button" (click)="erhoeheMenge(a)">+</button>
+        </div>
+      </li>
+    }
+  </ul>
+}

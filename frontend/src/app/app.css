@@ -1,0 +1,33 @@
+.app-header {
+  background-color: #1976d2;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 2px solid #155a9a;
+}
+
+.layout {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+  align-items: start;
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 24px;
+}
+
+.layout-form {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

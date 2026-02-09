@@ -1,0 +1,47 @@
+<form #orderForm="ngForm" (ngSubmit)="submitOrder()" novalidate>
+  <div>
+    <label for="vorname">Vorname:</label>
+    <input id="vorname" name="vorname" required [(ngModel)]="kunde.vorname" />
+  </div>
+
+  <div>
+    <label for="nachname">Nachname:</label>
+    <input id="nachname" name="nachname" required [(ngModel)]="kunde.nachname" />
+  </div>
+
+  <div>
+    <label for="strasse">Straße:</label>
+    <input id="strasse" name="strasse" required [(ngModel)]="kunde.strasse" />
+  </div>
+
+  <div>
+    <label for="hausnr">Hausnummer:</label>
+    <input id="hausnr" name="hausnr" required [(ngModel)]="kunde.hausnr" />
+  </div>
+
+  <div>
+    <label for="plz">PLZ:</label>
+    <input id="plz" name="plz" required [(ngModel)]="kunde.plz" />
+  </div>
+
+  <div>
+    <label for="ort">Ort:</label>
+    <input id="ort" name="ort" required [(ngModel)]="kunde.ort" />
+  </div>
+
+  <p>Bestellung:</p>
+
+  <ul>
+    @for (item of bestellService.artikel; track $index) {
+      @if (item.menge > 0) {
+        <li>
+          <p>{{ item.menge }}x {{ item.name }}</p>
+        </li>
+      }
+    }
+  </ul>
+
+  <p>Gesamtpreis: {{ bestellService.gesamtpreis / 100 }} €</p>
+
+  <button type="submit">Bestellen</button>
+</form>
