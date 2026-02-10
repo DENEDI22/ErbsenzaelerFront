@@ -20,7 +20,7 @@ export class List implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<Artikel[]>('http://localhost:3000/artikel').subscribe((data) => {
+    this.http.get<Artikel[]>('/api/artikel').subscribe((data) => {
       this.artikelSubject.next(data);
       this.bestellService.init(data);
     });

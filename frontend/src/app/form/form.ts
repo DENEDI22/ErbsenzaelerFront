@@ -73,7 +73,7 @@ export class Form {
       gesamtpreis,
     };
 
-    this.http.post<any>('http://localhost:3000/bestellung', bestellung).subscribe({
+    this.http.post<any>('api/bestellung', bestellung).subscribe({
       next: (res) => {
         console.log('Antwort vom Backend:', res);
 
