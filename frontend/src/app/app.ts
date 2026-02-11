@@ -1,13 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { List } from './list/list';
-import { Form } from './form/form';
-
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [List, Form],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('bestellen');
