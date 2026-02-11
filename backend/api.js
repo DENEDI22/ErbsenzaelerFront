@@ -194,6 +194,22 @@ app.post(api_prefix + "/bestellung", async (req, res) => {
   }
 });
 
+app.get(api_prefix + "/bestellunghdr", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT datum, "kundenNr", nr, versendet
+      FROM bestellunghdr
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("DB ERROR:", err);
+    res.status(500).json({
+      error: err.message,
+      code: err.code,
+    });
+  }
+});
+
 app.listen(process.env.PORT, () => {
   console.log(" Backend running on " + process.env.PORT + " with API_PREFIX: " + process.env.API_PREFIX);
 });
