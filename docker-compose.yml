@@ -1,11 +1,12 @@
 services:
   frontend-builder:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: node:20-alpine
+    working_dir: /app
     volumes:
-      - ./webserver/frontend:/app/dist
-    command: sh -c "npm build --prod && echo 'Frontend Build abgeschlossen'"
+      - ./frontend:/app
+      - /app/node_modules
+      - ./webserver/frontend/frontend:/output
+    command: sh -c "npm install && npm run build -- --output-path=dist && cp -r dist/* /output"
 
   backend-server:
     image: node:20
@@ -18,10 +19,12 @@ services:
     restart: unless-stopped
 
   frontend-server:
-    build:
-      context: ./webserver/frontend
-      dockerfile: Dockerfile
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./webserver/frontend:/app
     ports:
       - "4000:4000"
+    command: sh -c "npm install && node server.js"
     depends_on:
       - frontend-builder
