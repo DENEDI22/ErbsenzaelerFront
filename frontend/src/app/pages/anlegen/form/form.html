@@ -1,0 +1,18 @@
+<form #orderForm="ngForm" (ngSubmit)="addArtikel()" novalidate>
+  <div>
+    <label for="name">Artikelname:</label>
+    <input id="name" name="name" required [(ngModel)]="artikel.name" />
+  </div>
+
+  <div>
+    <label for="messeinheit">Messeinheit:</label>
+    <input id="messeinheit" name="messeinheit" required [(ngModel)]="artikel.messeinheit" />
+  </div>
+
+  <div>
+    <label for="preis">Preis in ct:</label>
+    <input id="preis" name="preis" required [(ngModel)]="artikel.preis" />
+  </div>
+
+  <button type="submit">Anlegen</button>
+</form>

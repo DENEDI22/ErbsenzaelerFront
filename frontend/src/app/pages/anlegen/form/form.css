@@ -61,19 +61,28 @@ input[type='text']::placeholder {
 button[type='submit'] {
   width: 100%;
   padding: 14px;
-  background: #4a8cff;
-  color: #fff;
+  background: linear-gradient(135deg, #34d399, #22c55e);
+  color: #ffffff;
+
   border: none;
-  border-radius: 12px;
-  font-size: 15px;
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+
+  font-size: 0.95rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 4px 12px rgba(74, 140, 255, 0.25);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.2s ease;
 }
 
 button[type='submit']:hover {
-  background: #2f6fe6;
+  background: #2ea372;
   box-shadow: 0 6px 16px rgba(74, 140, 255, 0.35);
 }
 

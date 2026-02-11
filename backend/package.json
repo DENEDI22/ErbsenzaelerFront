@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node api.js",
+    "dev": "nodemon api.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

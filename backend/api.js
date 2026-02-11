@@ -22,7 +22,9 @@ const pool = new Pool({
   port: Number(process.env.DB_PORT),
 });
 
-app.get("/artikel", async (req, res) => {
+const api_prefix = process.env.API_PREFIX;
+
+app.get(api_prefix + "/artikel", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM artikel");
     res.json(result.rows);
@@ -35,7 +37,80 @@ app.get("/artikel", async (req, res) => {
   }
 });
 
-app.post("/bestellung", async (req, res) => {
+app.post(api_prefix + "/artikel", async (req, res) => {
+  const { name, messeinheit, preis } = req.body;
+
+  if (!name || !messeinheit || preis === undefined) {
+    return res.status(400).json({
+      error: "Alle Felder sind Pflicht",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      INSERT INTO artikel ("name", messeinheit, preis)
+      VALUES ($1, $2, $3)
+      RETURNING *
+      `,
+      [name, messeinheit, preis],
+    );
+
+    res.status(201).json({
+      message: "Artikel angelegt",
+      artikel: result.rows[0],
+    });
+  } catch (err) {
+    console.error("DB ERROR:", err);
+    res.status(500).json({
+      error: err.message,
+      code: err.code,
+    });
+  }
+});
+
+app.put(api_prefix + "/artikel/:nr", async (req, res) => {
+  const { nr } = req.params;
+  const { name, messeinheit, preis } = req.body;
+
+  if (!nr) {
+    return res.status(400).json({ error: "nr fehlt" });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE artikel
+      SET
+        "name" = $1,
+        messeinheit = $2,
+        preis = $3
+      WHERE nr = $4
+      RETURNING *
+      `,
+      [name ?? "", messeinheit ?? "", preis ?? 0, nr],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Artikel nicht gefunden",
+      });
+    }
+
+    res.status(200).json({
+      message: "Artikel aktualisiert",
+      artikel: result.rows[0],
+    });
+  } catch (err) {
+    console.error("DB ERROR:", err);
+    res.status(500).json({
+      error: err.message,
+      code: err.code,
+    });
+  }
+});
+
+app.post(api_prefix + "/bestellung", async (req, res) => {
   const { kunde, artikel, gesamtpreis } = req.body;
 
   if (!kunde || !artikel || artikel.length === 0 || gesamtpreis === undefined) {
@@ -119,6 +194,6 @@ app.post("/bestellung", async (req, res) => {
   }
 });
 
-app.listen(process.env.Port, () => {
-  console.log(" Backend running");
+app.listen(process.env.PORT, () => {
+  console.log(" Backend running on " + process.env.PORT + " with API_PREFIX: " + process.env.API_PREFIX);
 });
