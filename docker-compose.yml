@@ -1,0 +1,27 @@
+services:
+  frontend-builder:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./webserver/frontend:/app/dist
+    command: sh -c "npm build --prod && echo 'Frontend Build abgeschlossen'"
+
+  backend-server:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && node api.js"
+    restart: unless-stopped
+
+  frontend-server:
+    build:
+      context: ./webserver/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      - frontend-builder
