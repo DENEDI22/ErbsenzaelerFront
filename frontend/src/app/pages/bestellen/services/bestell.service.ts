@@ -16,7 +16,7 @@ export class BestellService {
     const found = this.artikel.find((a) => a.nr === artikel.nr);
     if (!found) return;
 
-    found.menge = (found.menge ?? 0) + 1;
+    found.bestellt = (found.bestellt ?? 0) + 1;
     this.berechneGesamtpreis();
   }
 
@@ -24,11 +24,11 @@ export class BestellService {
     const found = this.artikel.find((a) => a.nr === artikel.nr);
     if (!found) return;
 
-    found.menge = Math.max((found.menge ?? 0) - 1, 0);
+    found.bestellt = Math.max((found.bestellt ?? 0) - 1, 0);
     this.berechneGesamtpreis();
   }
 
   berechneGesamtpreis() {
-    this.gesamtpreis = this.artikel.reduce((sum, a) => sum + a.preis * (a.menge ?? 0), 0);
+    this.gesamtpreis = this.artikel.reduce((sum, a) => sum + a.preis * (a.bestellt ?? 0), 0);
   }
 }

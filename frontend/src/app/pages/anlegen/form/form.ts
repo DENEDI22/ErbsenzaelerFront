@@ -14,15 +14,18 @@ export class Form {
     name: '',
     messeinheit: '',
     preis: -1,
+    menge : -1
   };
 
   constructor(private http: HttpClient) {}
 
   addArtikel() {
-    if (!this.artikel.name || !this.artikel.messeinheit || this.artikel.preis < 0) {
+    if (!this.artikel.name || !this.artikel.messeinheit || this.artikel.preis  < 0 || this.artikel.menge < 0) {
       alert('Bitte alle Felder korrekt ausfüllen!');
       return;
     }
+
+    this.artikel.preis *= 100; 
 
     this.http.post<any>('/api/artikel', this.artikel).subscribe({
       next: (res) => {
@@ -34,7 +37,7 @@ export class Form {
           alert(`Artikel erfolgreich hinzugefügt!`);
         }
 
-        this.artikel = { name: '', messeinheit: '', preis: -1 };
+        this.artikel = { name: '', messeinheit: '', preis: -1, menge : -1};
       },
       error: (err) => {
         console.error(err);

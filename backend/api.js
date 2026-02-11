@@ -38,7 +38,7 @@ app.get(api_prefix + "/artikel", async (req, res) => {
 });
 
 app.post(api_prefix + "/artikel", async (req, res) => {
-  const { name, messeinheit, preis } = req.body;
+  const { name, messeinheit, preis, menge } = req.body;
 
   if (!name || !messeinheit || preis === undefined) {
     return res.status(400).json({
@@ -49,11 +49,11 @@ app.post(api_prefix + "/artikel", async (req, res) => {
   try {
     const result = await pool.query(
       `
-      INSERT INTO artikel ("name", messeinheit, preis)
-      VALUES ($1, $2, $3)
+      INSERT INTO artikel ("name", messeinheit, preis, menge)
+      VALUES ($1, $2, $3, $4)
       RETURNING *
       `,
-      [name, messeinheit, preis],
+      [name, messeinheit, preis, menge],
     );
 
     res.status(201).json({
@@ -71,7 +71,7 @@ app.post(api_prefix + "/artikel", async (req, res) => {
 
 app.put(api_prefix + "/artikel/:nr", async (req, res) => {
   const { nr } = req.params;
-  const { name, messeinheit, preis } = req.body;
+  const { name, messeinheit, preis, menge } = req.body;
 
   if (!nr) {
     return res.status(400).json({ error: "nr fehlt" });
@@ -85,10 +85,11 @@ app.put(api_prefix + "/artikel/:nr", async (req, res) => {
         "name" = $1,
         messeinheit = $2,
         preis = $3
-      WHERE nr = $4
+        menge = $4
+      WHERE nr = $5
       RETURNING *
       `,
-      [name ?? "", messeinheit ?? "", preis ?? 0, nr],
+      [name ?? "", messeinheit ?? "", preis ?? 0,  menge ?? 0, nr],
     );
 
     if (result.rowCount === 0) {
@@ -158,8 +159,8 @@ app.post(api_prefix + "/bestellung", async (req, res) => {
 
     const insertHeader = await client.query(
       `
-      INSERT INTO bestellunghdr (datum, "kundenNr")
-      VALUES (NOW(), $1)
+      INSERT INTO bestellunghdr (datum, "kundenNr", versendet)
+      VALUES (NOW(), $1, false)
       RETURNING "nr"
       `,
       [kundennr],
@@ -191,6 +192,22 @@ app.post(api_prefix + "/bestellung", async (req, res) => {
     res.status(500).json({ error: err.message });
   } finally {
     client.release();
+  }
+});
+
+app.get(api_prefix + "/bestellunghdr", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT *
+      FROM bestellunghdr
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("DB ERROR:", err);
+    res.status(500).json({
+      error: err.message,
+      code: err.code,
+    });
   }
 });
 

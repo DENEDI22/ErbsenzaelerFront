@@ -33,9 +33,9 @@
 
   <ul>
     @for (item of bestellService.artikel; track $index) {
-      @if (item.menge > 0) {
+      @if (item.bestellt > 0) {
         <li>
-          <p>{{ item.menge }}x {{ item.name }}</p>
+          <p>{{ item.bestellt }}x {{ item.name }}</p>
         </li>
       }
     }
