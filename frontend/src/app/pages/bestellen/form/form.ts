@@ -27,7 +27,7 @@ export class Form {
 
   submitOrder() {
     const bestellteArtikel: Artikel[] = this.bestellService.artikel.filter(
-      (a) => (a.menge ?? 0) > 0,
+      (a) => (a.bestellt ?? 0) > 0,
     );
 
     if (
@@ -54,7 +54,7 @@ export class Form {
       return;
     }
 
-    const gesamtpreis = bestellteArtikel.reduce((sum, a) => sum + a.preis * (a.menge ?? 0), 0);
+    const gesamtpreis = bestellteArtikel.reduce((sum, a) => sum + a.preis * (a.bestellt ?? 0), 0);
 
     const bestellung = {
       kunde: {
@@ -67,13 +67,13 @@ export class Form {
       },
       artikel: bestellteArtikel.map((a) => ({
         artikelnr: a.nr,
-        menge: a.menge,
+        menge: a.bestellt,
         preis: a.preis,
       })),
       gesamtpreis,
     };
 
-    this.http.post<any>('api/bestellung', bestellung).subscribe({
+    this.http.post<any>('/api/bestellung', bestellung).subscribe({
       next: (res) => {
         console.log('Antwort vom Backend:', res);
 
@@ -83,7 +83,7 @@ export class Form {
           alert(`Kunde neu angelegt!\nKundennr: ${res.kundennr}`);
         }
 
-        this.bestellService.init(this.bestellService.artikel.map((a) => ({ ...a, menge: 0 })));
+        this.bestellService.init(this.bestellService.artikel.map((a) => ({ ...a, bestellt: 0 })));
 
         this.kunde = {
           vorname: '',
