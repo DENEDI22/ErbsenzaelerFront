@@ -1,1 +1,12 @@
 http://212.227.79.83/
+
+-env:
+
+PORT=3000
+API_PREFIX=/api
+
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+DB_PORT=
