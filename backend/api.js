@@ -84,7 +84,7 @@ app.put(api_prefix + "/artikel/:nr", async (req, res) => {
       SET
         "name" = $1,
         messeinheit = $2,
-        preis = $3
+        preis = $3,
         menge = $4
       WHERE nr = $5
       RETURNING *
