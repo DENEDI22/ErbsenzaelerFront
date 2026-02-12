@@ -7,17 +7,27 @@
 } @else {
   <ul>
     @for (a of artikel; track a.nr) {
-      <li>
-        <span class="name">{{ a.name }}</span>
-        <span class="beschreibung">{{ a.beschreibung }}</span>
-        <span class="preis">{{ a.preis/100 }} €</span>
+      @if (a.menge > 0) {
+        <li>
+          <span class="name">{{ a.name }}</span>
+          <span class="beschreibung">{{ a.beschreibung }}</span>
+          <span class="preis">{{ a.preis / 100 }} €</span>
 
-        <div class="quantity-controller">
-          <button type="button" (click)="verringerMenge(a)">-</button>
-          <span>{{ a.bestellt || 0 }}</span>
-          <button type="button" (click)="erhoeheMenge(a)">+</button>
-        </div>
-      </li>
+          <div class="quantity-controller">
+            <button type="button" (click)="verringerMenge(a)">-</button>
+            <span>{{ a.bestellt || 0 }}</span>
+            <button type="button" (click)="erhoeheMenge(a)">+</button>
+          </div>
+        </li>
+      } @else {
+        <li>
+          <span class="name">{{ a.name }}</span>
+          <span class="beschreibung">{{ a.beschreibung }}</span>
+          <span class="preis">{{ a.preis / 100 }} €</span>
+
+          <p>Nicht auf Lager!</p>
+        </li>
+      }
     }
   </ul>
 }
